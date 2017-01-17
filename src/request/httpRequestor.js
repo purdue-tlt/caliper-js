@@ -100,7 +100,7 @@ self.send = function(sensor, data) {
         logger.log('debug', 'httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
 
         // Create request
-        var request = http.request(sendOptions, (response) => {
+        var request = http.request(sendOptions, function(response) {
             logger.log('info', "request complete. reading response = " + JSON.stringify(response));
             // ignore response for failed request, handled in .on('error') below
             if (response.statusCode === 0) {
@@ -111,7 +111,7 @@ self.send = function(sensor, data) {
             response.on('data', function(d) {
                 body += d;
             });
-            response.on('end', () => {
+            response.on('end', function() {
                 logger.log('info', 'response body received');
                 // match 200 level status codes
                 if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -125,7 +125,7 @@ self.send = function(sensor, data) {
             });
         });
 
-        request.on('error', (error) => {
+        request.on('error', function(error) {
             logger.log('error', 'send error = ' + error);
             reject(error);
         });
