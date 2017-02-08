@@ -18,7 +18,7 @@
 
 var _ = require('lodash-node');
 var http = require('https');
-// var Q = require('q');
+var Q = require('q');
 var logger = require('../logger');
 var moment = require('moment');
 var requestor = require('./eventStoreRequestor');
@@ -75,13 +75,18 @@ self.getJsonPayload = function(sensor, data) {
  * @param data
  */
 self.send = function(sensor, data) {
-    if (initialized()) {
-        logger.log('debug', "Sending data " + JSON.stringify(data));
+    return Q.Promise(function(resolve, reject, notify) {
+        if (!initialized()) {
+            reject(new Error('httpRequestor not initialized'));
+            return;
+        }
+
+        logger.log('debug', 'Sending data ' + JSON.stringify(data));
 
         // Create the Envelope payload
         var jsonPayload = requestor.getJsonPayload(sensor, data);
 
-        logger.log('debug', "Added data to envelope " + JSON.stringify(jsonPayload));
+        logger.log('debug', 'Added data to envelope ' + JSON.stringify(jsonPayload));
 
         // Add Headers
         var headers = {
@@ -95,19 +100,40 @@ self.send = function(sensor, data) {
         logger.log('debug', 'httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
 
         // Create request
-        var request = http.request(sendOptions, function (response) {
-            logger.log('info', "finished sending. Response = " + JSON.stringify(response));
-        }, function(error){
-            logger.log('error', "ERROR sending event = " + ERROR);
+        var request = http.request(sendOptions, function(response) {
+            logger.log('info', "request complete. reading response = " + JSON.stringify(response));
+            // ignore response for failed request, handled in .on('error') below
+            if (response.statusCode === 0) {
+            	return;
+            }
+
+            var body = '';
+            response.on('data', function(d) {
+                body += d;
+            });
+            response.on('end', function() {
+                logger.log('info', 'response body received');
+                // match 200 level status codes
+                if (response.statusCode >= 200 && response.statusCode < 300) {
+                    var parsedBody = body.length > 0 ? JSON.parse(body) : body;
+                    resolve(parsedBody);
+                } else {
+                    var error = new Error('response error = ' + body);
+                    logger.log('error', error);
+                    reject(error);
+                }
+            });
+        });
+
+        request.on('error', function(error) {
+            logger.log('error', 'send error = ' + error);
+            reject(error);
         });
 
         // Write request
         request.write(jsonPayload);
         request.end();
-
-    } else {
-        logger.log('error', "httpRequestor is not initialized!");
-    }
+    });
 };
 
 module.exports = {

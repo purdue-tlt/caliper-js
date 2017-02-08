@@ -1,4 +1,3 @@
-dist/*
 node_modules
 doc/*
 
@@ -9,3 +8,5 @@ doc/*
 *.iws
 *.uml
 out/
+
+.DS_Store

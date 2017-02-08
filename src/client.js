@@ -47,7 +47,7 @@ self.initialize = function(sensorOptions) {
  * @param entity
  */
 self.describe = function(sensor, entity) {
-    requestor.send(sensor, entity);
+    return requestor.send(sensor, entity);
 };
 
 /**
@@ -58,7 +58,7 @@ self.describe = function(sensor, entity) {
  * @param event
  */
 self.send = function(sensor, event) {
-    requestor.send(sensor, event);
+    return requestor.send(sensor, event);
 };
 
 module.exports = {
