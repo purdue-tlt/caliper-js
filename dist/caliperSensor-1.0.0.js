@@ -30251,7 +30251,7 @@ var logger = require('./logger');
  * so we can attach non-sensor module exports to it
  * @type {{}|*|Caliper}
  */
-var Caliper = window.Caliper || {};
+ var Caliper = (typeof window !== 'undefined') ? window.Caliper || {} : {};
 
 /**
  * Represents Caliper Sensor.
@@ -30416,8 +30416,11 @@ Caliper.Request.HttpRequestor       = require('./request/httpRequestor');
 Caliper.Sensor = Sensor;
 
 // Replace/create Caliper in global namespace
-window.Caliper = Caliper;
+if (typeof window !== 'undefined') {
+  window.Caliper = Caliper;
+  logger.log('debug', "Added Sensor to window global %o", window.Sensor);
+}
 
-logger.log('debug', "Added Sensor to window global %o", window.Sensor);
+module.exports = Caliper
 
 },{"./actions/annotationActions":48,"./actions/assessmentActions":49,"./actions/assessmentItemActions":50,"./actions/assignableActions":51,"./actions/mediaActions":52,"./actions/navigationActions":53,"./actions/outcomeActions":54,"./actions/readingActions":55,"./actions/sessionActions":56,"./client":57,"./context/context":58,"./entities/agent/organization":59,"./entities/agent/person":60,"./entities/agent/softwareApplication":61,"./entities/annotation/annotation":62,"./entities/annotation/annotationType":63,"./entities/annotation/bookmarkAnnotation":64,"./entities/annotation/highlightAnnotation":65,"./entities/annotation/sharedAnnotation":66,"./entities/annotation/tagAnnotation":67,"./entities/assessment/assessment":68,"./entities/assessment/assessmentItem":69,"./entities/assignable/assignableDigitalResource":70,"./entities/assignable/assignableDigitalResourceType":71,"./entities/assignable/attempt":72,"./entities/digitalResource":73,"./entities/digitalResourceType":74,"./entities/entity":75,"./entities/entityType":76,"./entities/learningObjective":77,"./entities/lis/courseOffering":78,"./entities/lis/courseSection":79,"./entities/lis/group":80,"./entities/lis/membership":81,"./entities/lis/role":82,"./entities/lis/status":83,"./entities/media/audioObject":84,"./entities/media/imageObject":85,"./entities/media/mediaLocation":86,"./entities/media/mediaObject":87,"./entities/media/mediaObjectType":88,"./entities/media/videoObject":89,"./entities/outcome/result":90,"./entities/reading/ePubChapter":91,"./entities/reading/ePubPart":92,"./entities/reading/ePubSubChapter":93,"./entities/reading/ePubVolume":94,"./entities/reading/frame":95,"./entities/reading/reading":96,"./entities/reading/webPage":97,"./entities/response/fillinBlankResponse":98,"./entities/response/multipleChoiceResponse":99,"./entities/response/multipleResponseResponse":100,"./entities/response/response":101,"./entities/response/responseType":102,"./entities/response/selectTextResponse":103,"./entities/response/trueFalseResponse":104,"./entities/session/session":105,"./events/annotationEvent":106,"./events/assessmentEvent":107,"./events/assessmentItemEvent":108,"./events/assignableEvent":109,"./events/event":110,"./events/eventType":111,"./events/mediaEvent":112,"./events/navigationEvent":113,"./events/outcomeEvent":114,"./events/sessionEvent":115,"./events/viewEvent":116,"./logger":117,"./request/envelope":118,"./request/eventStoreRequestor":119,"./request/httpRequestor":120,"lodash-node":23}]},{},[48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121]);
