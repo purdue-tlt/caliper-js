@@ -197,6 +197,6 @@ Caliper.Sensor = Sensor;
 if (typeof window !== 'undefined') {
   window.Caliper = Caliper;
   logger.log('debug', "Added Sensor to window global %o", window.Sensor);
-} else {
-  module.exports = Caliper
 }
+
+module.exports = Caliper
