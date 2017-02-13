@@ -20,7 +20,7 @@
  * Caliper Sensor
  * @class
  */
-var _ = require('lodash-node');
+var _ = require('lodash');
 var client = require('./client');
 var logger = require('./logger');
 
@@ -29,7 +29,7 @@ var logger = require('./logger');
  * so we can attach non-sensor module exports to it
  * @type {{}|*|Caliper}
  */
-var Caliper = window.Caliper || {};
+ var Caliper = (typeof window !== 'undefined') ? window.Caliper || {} : {};
 
 /**
  * Represents Caliper Sensor.
@@ -64,7 +64,7 @@ Sensor.initialize = function(id, options) {
  * @return boolean whether the describe call succeeded
  */
 Sensor.describe = function(entity) {
-    client.describe(this, entity);
+    return client.describe(this, entity);
 };
 
 /**
@@ -73,7 +73,7 @@ Sensor.describe = function(entity) {
  * @return boolean whether the measure call succeeded
  */
 Sensor.send = function(event) {
-    client.send(this, event);
+    return client.send(this, event);
 };
 
 /**
@@ -194,6 +194,9 @@ Caliper.Request.HttpRequestor       = require('./request/httpRequestor');
 Caliper.Sensor = Sensor;
 
 // Replace/create Caliper in global namespace
-window.Caliper = Caliper;
+if (typeof window !== 'undefined') {
+  window.Caliper = Caliper;
+  logger.log('debug', "Added Sensor to window global %o", window.Sensor);
+}
 
-logger.log('debug', "Added Sensor to window global %o", window.Sensor);
+module.exports = Caliper

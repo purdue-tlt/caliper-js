@@ -9,3 +9,5 @@ doc/*
 *.iws
 *.uml
 out/
+
+.DS_Store

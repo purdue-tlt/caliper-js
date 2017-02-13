@@ -16,7 +16,7 @@
  * with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-var _ = require('lodash-node');
+var _ = require('lodash');
 var diff = require('deep-diff').diff;
 var jf = require('jsonfile')
 var util = require('util')
@@ -32,7 +32,7 @@ var jsonCompare = function (expectedJsonFile, JsonToCompare, t, filterCallback) 
 
   var differences;
 
-  var FIXTURES_BASE_DIR = '../caliper-common-fixtures/src/test/resources/fixtures/';
+  var FIXTURES_BASE_DIR = '../caliper-common-fixtures-public/src/test/resources/fixtures/';
   var file = FIXTURES_BASE_DIR + expectedJsonFile + '.json';
   jf.readFile(file, function (err, expectedJson) {
     // console.log("INFO: Loaded JSON from file: " + util.inspect(expectedJson));
