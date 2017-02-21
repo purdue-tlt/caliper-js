@@ -21,6 +21,7 @@ var http = require('https');
 var Q = require('q');
 var logger = require('../logger');
 var moment = require('moment');
+var StandardHttpError = require('standard-http-error');
 var requestor = require('./eventStoreRequestor');
 
 /**
@@ -118,7 +119,7 @@ self.send = function(sensor, data) {
                     var parsedBody = body.length > 0 ? JSON.parse(body) : body;
                     resolve(parsedBody);
                 } else {
-                    var error = new Error('response error = ' + body);
+                    var error = new StandardHttpError(response.statusCode, {body: body});
                     logger.log('error', error);
                     reject(error);
                 }
