@@ -102,7 +102,7 @@ self.send = function(sensor, data) {
 
         // Create request
         var request = http.request(sendOptions, function(response) {
-            logger.log('info', "request complete. reading response = " + JSON.stringify(response));
+            logger.log('info', "request complete. reading response");
             // ignore response for failed request, handled in .on('error') below
             if (response.statusCode === 0) {
             	return;
