@@ -91,7 +91,7 @@ self.send = function(sensor, data) {
 
         // Add Headers
         var headers = {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
             'Content-Length': jsonPayload.length
         };
 
