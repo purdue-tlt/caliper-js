@@ -119,7 +119,7 @@ self.send = function(sensor, data) {
                     var parsedBody = body.length > 0 ? JSON.parse(body) : body;
                     resolve(parsedBody);
                 } else {
-                    var error = new StandardHttpError(response.statusCode, {body: body});
+                    var error = new StandardHttpError(response.statusCode, {data: data});
                     logger.log('error', error);
                     reject(error);
                 }
