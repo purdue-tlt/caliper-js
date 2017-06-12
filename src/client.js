@@ -18,7 +18,6 @@
 
 var _ = require('lodash');
 var requestor = require('./request/httpRequestor');
-var logger = require('./logger');
 
 /**
  * Represents asynchronous self for the Caliper Sensor.
@@ -36,7 +35,6 @@ var options = {};
 self.initialize = function(sensorOptions) {
     options = sensorOptions;
     requestor.initialize(sensorOptions);
-    logger.log('info', "Initialized Client with options " + JSON.stringify(options));
 };
 
 /**

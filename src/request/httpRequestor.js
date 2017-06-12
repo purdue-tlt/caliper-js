@@ -19,7 +19,6 @@
 var _ = require('lodash');
 var http = require('https');
 var Q = require('q');
-var logger = require('../logger');
 var moment = require('moment');
 var StandardHttpError = require('standard-http-error');
 var requestor = require('./eventStoreRequestor');
@@ -48,7 +47,6 @@ self.initialize = function(sensorOptions) {
         options = sensorOptions;
     }
     requestor.initialize(sensorOptions);
-    logger.log('debug', "Initialized httpRequestor with options " + JSON.stringify(options));
 };
 
 /**
@@ -82,12 +80,8 @@ self.send = function(sensor, data) {
             return;
         }
 
-        logger.log('debug', 'Sending data ' + JSON.stringify(data));
-
         // Create the Envelope payload
         var jsonPayload = requestor.getJsonPayload(sensor, data);
-
-        logger.log('debug', 'Added data to envelope ' + JSON.stringify(jsonPayload));
 
         // Add Headers
         var headers = {
@@ -98,11 +92,8 @@ self.send = function(sensor, data) {
         // Merge headers
         var sendOptions = _.merge(options, {method: 'POST'}, {headers: headers});
 
-        logger.log('debug', 'httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
-
         // Create request
         var request = http.request(sendOptions, function(response) {
-            logger.log('info', "request complete. reading response");
             // ignore response for failed request, handled in .on('error') below
             if (response.statusCode === 0) {
             	return;
@@ -113,21 +104,18 @@ self.send = function(sensor, data) {
                 body += d;
             });
             response.on('end', function() {
-                logger.log('info', 'response body received');
                 // match 200 level status codes
                 if (response.statusCode >= 200 && response.statusCode < 300) {
                     var parsedBody = body.length > 0 ? JSON.parse(body) : body;
                     resolve(parsedBody);
                 } else {
                     var error = new StandardHttpError(response.statusCode, {data: data});
-                    logger.log('error', error);
                     reject(error);
                 }
             });
         });
 
         request.on('error', function(error) {
-            logger.log('error', 'send error = ' + error);
             reject(error);
         });
 
