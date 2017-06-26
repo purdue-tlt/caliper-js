@@ -18,7 +18,8 @@
     "lodash": "^4.17.4",
     "moment": "^2.10.1",
     "q": "^1.0.1",
-    "standard-http-error": "^2.0.0"
+    "standard-http-error": "^2.0.0",
+    "superagent": "3.5.x"
   },
   "devDependencies": {
     "deep-diff": "^0.3.0",

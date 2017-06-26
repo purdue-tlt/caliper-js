@@ -17,7 +17,7 @@
  */
 
 var _ = require('lodash');
-var http = require('https');
+var request = require('superagent');
 var Q = require('q');
 var moment = require('moment');
 var StandardHttpError = require('standard-http-error');
@@ -90,38 +90,29 @@ self.send = function(sensor, data) {
         };
 
         // Merge headers
-        var sendOptions = _.merge(options, {method: 'POST'}, {headers: headers});
+        var sendOptions = _.merge(options, {headers: headers});
 
-        // Create request
-        var request = http.request(sendOptions, function(response) {
-            // ignore response for failed request, handled in .on('error') below
-            if (response.statusCode === 0) {
-            	return;
-            }
-
-            var body = '';
-            response.on('data', function(d) {
-                body += d;
-            });
-            response.on('end', function() {
-                // match 200 level status codes
-                if (response.statusCode >= 200 && response.statusCode < 300) {
+        request
+            .post(sendOptions.protocol + sendOptions.hostname + sendOptions.path)
+            .set(sendOptions.headers)
+            .send(jsonPayload)
+            .end(function(err, res) {
+                if (res && res.status >= 200 && res.status < 300) {
+                    var body = res.text ? res.text : '';
                     var parsedBody = body.length > 0 ? JSON.parse(body) : body;
                     resolve(parsedBody);
-                } else {
-                    var error = new StandardHttpError(response.statusCode, {data: data});
-                    reject(error);
+                    return;
                 }
-            });
-        });
 
-        request.on('error', function(error) {
-            reject(error);
-        });
+                //http errors
+                if (err && (typeof err.status === 'number')) {
+                    var error = new StandardHttpError(err.status, {data: err.response.text});
+                    reject(error);
+                    return;
+                }
 
-        // Write request
-        request.write(jsonPayload);
-        request.end();
+                reject(err);
+        });
     });
 };
 
