@@ -9,12 +9,9 @@
   },
   "main": "src/sensor.js",
   "dependencies": {
-    "caterpillar": "3.0.x",
-    "caterpillar-browser": "3.0.x",
-    "caterpillar-filter": "3.0.x",
-    "caterpillar-human": "3.0.x",
     "http-browserify": "^1.7.0",
     "https-browserify": "0.0.x",
+    "js-logger": "^1.3.0",
     "lodash": "^4.17.4",
     "moment": "^2.10.1",
     "q": "^1.0.1",

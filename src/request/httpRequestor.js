@@ -19,6 +19,7 @@
 var _ = require('lodash');
 var request = require('superagent');
 var Q = require('q');
+var logger = require('../logger').get('httpRequestor');
 var moment = require('moment');
 var StandardHttpError = require('standard-http-error');
 var requestor = require('./eventStoreRequestor');
@@ -47,6 +48,7 @@ self.initialize = function(sensorOptions) {
         options = sensorOptions;
     }
     requestor.initialize(sensorOptions);
+    logger.debug("Initialized httpRequestor with options " + JSON.stringify(options));
 };
 
 /**
@@ -80,8 +82,12 @@ self.send = function(sensor, data) {
             return;
         }
 
+        logger.debug('Sending data ' + JSON.stringify(data));
+
         // Create the Envelope payload
         var jsonPayload = requestor.getJsonPayload(sensor, data);
+
+        logger.debug('Added data to envelope ' + JSON.stringify(jsonPayload));
 
         // Add Headers
         var headers = {
@@ -92,11 +98,13 @@ self.send = function(sensor, data) {
         // Merge headers
         var sendOptions = _.merge(options, {headers: headers});
 
+        logger.debug('httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
         request
             .post(sendOptions.protocol + sendOptions.hostname + sendOptions.path)
             .set(sendOptions.headers)
             .send(jsonPayload)
             .end(function(err, res) {
+                logger.info('response body received');
                 if (res && res.status >= 200 && res.status < 300) {
                     var body = res.text ? res.text : '';
                     var parsedBody = body.length > 0 ? JSON.parse(body) : body;
@@ -107,10 +115,12 @@ self.send = function(sensor, data) {
                 //http errors
                 if (err && (typeof err.status === 'number')) {
                     var error = new StandardHttpError(err.status, {data: err.response.text});
+                    logger.error(error);
                     reject(error);
                     return;
                 }
 
+                logger.error('send error = ' + error);
                 reject(err);
         });
     });
