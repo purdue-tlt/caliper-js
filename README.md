@@ -33,6 +33,10 @@ Then, add the following to your Javascript script:
 <script src="dist/caliperSensor-1.0.0.js"></script>
 ```
 
+### Webpack
+
+For issues compiling with Webpack, check out the suggestions on this page: https://github.com/visionmedia/superagent/wiki/SuperAgent-for-Webpack.
+
 ## Documentation
 Documentation is available at [http://www.imsglobal.org/caliper](https://www.imsglobal.org/caliper).
 
