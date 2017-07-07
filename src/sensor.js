@@ -22,7 +22,7 @@
  */
 var _ = require('lodash');
 var client = require('./client');
-var logger = require('./logger');
+var logger = require('./logger').get('sensor');
 
 /**
  * Grab an existing namespace object or create a blank object if it doesn't exist
@@ -196,7 +196,7 @@ Caliper.Sensor = Sensor;
 // Replace/create Caliper in global namespace
 if (typeof window !== 'undefined') {
   window.Caliper = Caliper;
-  logger.log('debug', "Added Sensor to window global %o", window.Sensor);
+  logger.debug("Added Sensor to window global %o", window.Sensor);
 }
 
 module.exports = Caliper

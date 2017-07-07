@@ -17,7 +17,6 @@
  */
 
 var _ = require('lodash');
-var logger = require('../logger');
 var moment = require('moment');
 var Envelope = require('./envelope');
 
@@ -44,7 +43,6 @@ self.initialize = function(sensorOptions) {
     if (!_.isUndefined(sensorOptions)) {
         options = sensorOptions;
     }
-    // logger.log('info', "Initializing Requestor with options " + JSON.stringify(options));
 };
 
 /**
