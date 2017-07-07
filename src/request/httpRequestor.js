@@ -17,9 +17,9 @@
  */
 
 var _ = require('lodash');
-var http = require('https');
+var request = require('superagent');
 var Q = require('q');
-var logger = require('../logger');
+var logger = require('../logger').get('httpRequestor');
 var moment = require('moment');
 var StandardHttpError = require('standard-http-error');
 var requestor = require('./eventStoreRequestor');
@@ -48,7 +48,7 @@ self.initialize = function(sensorOptions) {
         options = sensorOptions;
     }
     requestor.initialize(sensorOptions);
-    logger.log('debug', "Initialized httpRequestor with options " + JSON.stringify(options));
+    logger.debug("Initialized httpRequestor with options " + JSON.stringify(options));
 };
 
 /**
@@ -82,12 +82,12 @@ self.send = function(sensor, data) {
             return;
         }
 
-        logger.log('debug', 'Sending data ' + JSON.stringify(data));
+        logger.debug('Sending data ' + JSON.stringify(data));
 
         // Create the Envelope payload
         var jsonPayload = requestor.getJsonPayload(sensor, data);
 
-        logger.log('debug', 'Added data to envelope ' + JSON.stringify(jsonPayload));
+        logger.debug('Added data to envelope ' + JSON.stringify(jsonPayload));
 
         // Add Headers
         var headers = {
@@ -96,44 +96,33 @@ self.send = function(sensor, data) {
         };
 
         // Merge headers
-        var sendOptions = _.merge(options, {method: 'POST'}, {headers: headers});
+        var sendOptions = _.merge(options, {headers: headers});
 
-        logger.log('debug', 'httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
-
-        // Create request
-        var request = http.request(sendOptions, function(response) {
-            logger.log('info', "request complete. reading response");
-            // ignore response for failed request, handled in .on('error') below
-            if (response.statusCode === 0) {
-            	return;
-            }
-
-            var body = '';
-            response.on('data', function(d) {
-                body += d;
-            });
-            response.on('end', function() {
-                logger.log('info', 'response body received');
-                // match 200 level status codes
-                if (response.statusCode >= 200 && response.statusCode < 300) {
+        logger.debug('httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
+        request
+            .post(sendOptions.protocol + sendOptions.hostname + sendOptions.path)
+            .set(sendOptions.headers)
+            .send(jsonPayload)
+            .end(function(err, res) {
+                logger.info('response body received');
+                if (res && res.status >= 200 && res.status < 300) {
+                    var body = res.text ? res.text : '';
                     var parsedBody = body.length > 0 ? JSON.parse(body) : body;
                     resolve(parsedBody);
-                } else {
-                    var error = new StandardHttpError(response.statusCode, {data: data});
-                    logger.log('error', error);
-                    reject(error);
+                    return;
                 }
-            });
-        });
 
-        request.on('error', function(error) {
-            logger.log('error', 'send error = ' + error);
-            reject(error);
-        });
+                //http errors
+                if (err && (typeof err.status === 'number')) {
+                    var error = new StandardHttpError(err.status, {data: err.response.text});
+                    logger.error(error);
+                    reject(error);
+                    return;
+                }
 
-        // Write request
-        request.write(jsonPayload);
-        request.end();
+                logger.error('send error = ' + error);
+                reject(err);
+        });
     });
 };
 

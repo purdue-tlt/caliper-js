@@ -16,21 +16,8 @@
  * with this program. If not, see http://www.gnu.org/licenses/.
  */
 
- var level = process.argv.indexOf('--log') === -1 ? 6 : 7;
- var logger = require('caterpillar').create({ level: level });
- var filter = require('caterpillar-filter').create();
- var human = require('caterpillar-human').create();
+var loggerBase = require('js-logger');
+loggerBase.useDefaults();
 
- // Pipe to filter to human to stdout
- // logger.pipe(filter).pipe(human).pipe(process.stdout);
-
- // If debugging write logger data to debug.log
- if (level === 7) {
-   logger.pipe(require('fs').createWriteStream('caliper_js-debug.log'));
- }
-
- // Export
- module.exports = {
-   logger: logger,
-   log: logger.log.bind(logger)
- };
+//Export
+module.exports = loggerBase;
