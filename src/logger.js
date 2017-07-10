@@ -17,7 +17,12 @@
  */
 
 var loggerBase = require('js-logger');
+
 loggerBase.useDefaults();
+
+if (process.env.NODE_ENV === 'production') {
+	loggerBase.setLevel(Logger.OFF);
+}
 
 //Export
 module.exports = loggerBase;
