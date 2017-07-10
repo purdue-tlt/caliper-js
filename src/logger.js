@@ -21,7 +21,7 @@ var loggerBase = require('js-logger');
 loggerBase.useDefaults();
 
 if (typeof process.env.DEBUG === 'undefined') {
-	loggerBase.setLevel(Logger.OFF);
+	loggerBase.setLevel(loggerBase.OFF);
 }
 
 //Export
