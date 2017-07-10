@@ -20,7 +20,7 @@ var loggerBase = require('js-logger');
 
 loggerBase.useDefaults();
 
-if (process.env.NODE_ENV === 'production') {
+if (typeof process.env.DEBUG === 'undefined') {
 	loggerBase.setLevel(Logger.OFF);
 }
 
