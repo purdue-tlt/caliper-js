@@ -18,7 +18,7 @@
 
 var _ = require('lodash');
 var request = require('superagent');
-var Q = require('q');
+var Promise = require('bluebird');
 var logger = require('../logger').get('httpRequestor');
 var moment = require('moment');
 var StandardHttpError = require('standard-http-error');
@@ -76,7 +76,7 @@ self.getJsonPayload = function(sensor, data) {
  * @param data
  */
 self.send = function(sensor, data) {
-    return Q.Promise(function(resolve, reject, notify) {
+    return new Promise(function(resolve, reject) {
         if (!initialized()) {
             reject(new Error('httpRequestor not initialized'));
             return;
