@@ -99,7 +99,7 @@ self.send = function(sensor, data) {
 
         logger.debug('httpRequestor: about to request using sendOptions = ' + JSON.stringify(sendOptions));
         request
-            .post(sendOptions.protocol + sendOptions.hostname + sendOptions.path)
+            .post(sendOptions.protocol + '//' + sendOptions.hostname + sendOptions.path)
             .set(sendOptions.headers)
             .send(jsonPayload)
             .end(function(err, res) {
