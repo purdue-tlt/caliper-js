@@ -19,7 +19,7 @@
     "superagent": "3.5.x"
   },
   "devDependencies": {
-    "deep-diff": "^0.3.0",
+    "deep-diff": "0.3.6",
     "grunt": "1.0.x",
     "grunt-browserify": "5.0.x",
     "grunt-http-server": "2.0.x",
