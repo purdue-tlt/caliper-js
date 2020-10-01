@@ -15,7 +15,7 @@ caliper-js is a Javascript client for [Caliper](http://www.imsglobal.org/caliper
 ### Testing and Building
 
 * npm install
-* Clone caliper-common-fixtures at the same level as caliper-js (note that test/testUtils.js references fixtures at a relative path to its parent)
+* Clone [caliper-common-fixtures](https://github.com/purdue-tlt/caliper-common-fixtures) at the same level  as caliper-js (note that test/testUtils.js references fixtures at a relative path to its parent)
 * grunt (this will run unit tests and build dist/caliperSensor-x.x.x.js)
 
 ### Running the example
