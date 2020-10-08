@@ -57,10 +57,14 @@ test('Create Session LOGOUT Event and validate attributes', function(t) {
     var action = SessionActions.LOGGED_OUT;
 
     // The Object being interacted with by the Actor
-    var eventObj = new SoftwareApplication("https://example.com/viewer");
-    eventObj.setName("ePub");
+    var eventObj = new Session("https://example.com/viewer/session-123456789");
+    eventObj.setName("session-123456789");
     eventObj.setDateCreated((new Date("2015-08-01T06:00:00Z")).toISOString());
     eventObj.setDateModified((new Date("2015-09-02T11:30:00Z")).toISOString());
+    eventObj.actor = actor;
+    eventObj.setStartedAtTime((new Date("2015-09-15T10:15:00.000Z")).toISOString());
+    eventObj.setEndedAtTime((new Date("2015-09-15T11:05:00.000Z")).toISOString());
+    eventObj.setDuration("PT3000S");
 
     var ePubVolume = new EPubVolume("https://example.com/viewer/book/34843#epubcfi(/4/3)");
     ePubVolume.setName("The Glorious Cause: The American Revolution, 1763-1789 (Oxford History of the United States)");
@@ -68,15 +72,7 @@ test('Create Session LOGOUT Event and validate attributes', function(t) {
     ePubVolume.setDateModified((new Date("2015-09-02T11:30:00Z")).toISOString());
 
     // The target session
-    var target = new Session("https://example.com/viewer/session-123456789");
-    target.setName("session-123456789");
-    target.setDescription(null);
-    target.setActor(actor);
-    target.setDateCreated((new Date("2015-08-01T06:00:00Z")).toISOString());
-    target.setDateModified((new Date("2015-09-02T11:30:00Z")).toISOString());
-    target.setStartedAtTime((new Date("2015-09-15T10:15:00Z")).toISOString());
-    target.setEndedAtTime((new Date("2015-09-15T11:05:00Z")).toISOString());
-    target.setDuration("PT3000S");
+    var target = null;
 
     var generated = null;
 
