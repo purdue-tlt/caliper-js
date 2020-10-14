@@ -86,7 +86,20 @@ test('Create Outcome Event and validate attributes', function (t) {
   eventObj.setStartedAtTime((new Date("2015-09-15T10:15:00Z")).toISOString());
 
   // The target object (frame) within the Event Object
-  var target = null;
+  var target = new Assessment("https://example.edu/politicalScience/2015/american-revolution-101/assessment/001");
+  target.setDescription(null);
+  target.setName("American Revolution - Key Figures Assessment");
+  target.setVersion("1.0");
+  target.setDateCreated((new Date("2015-08-01T06:00:00.000Z")).toISOString());
+  target.setDateModified((new Date("2015-09-02T11:30:00.000Z")).toISOString());
+  target.setDatePublished((new Date("2015-08-15T09:30:00.000Z")).toISOString());
+  target.setDateToActivate((new Date("2015-08-16T05:00:00.000Z")).toISOString());
+  target.setDateToShow((new Date("2015-08-16T05:00:00.000Z")).toISOString());
+  target.setDateToStartOn((new Date("2015-08-16T05:00:00.000Z")).toISOString());
+  target.setDateToSubmit((new Date("2015-09-28T11:59:59.000Z")).toISOString());
+  target.setMaxAttempts(2);
+  target.setMaxSubmits(2);
+  target.setMaxScore(3.0);
 
   var generated = new Result(eventObj['@id'] + "/result");
   generated.setActor(actor['@id']);
